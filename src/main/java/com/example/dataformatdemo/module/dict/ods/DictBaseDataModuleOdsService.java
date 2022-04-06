@@ -38,6 +38,14 @@ public interface DictBaseDataModuleOdsService {
     String getFieldsSqlFromJsonString(String jsonString);
 
     /**
+     * 获取字段名加注释
+     * @param jsonString
+     * @param odsFilePath
+     * @return
+     */
+    String getFieldsSqlFromJsonString(String jsonString, String odsFilePath);
+
+    /**
      * 获取增量建表语句
      *
      * @param item
@@ -46,6 +54,15 @@ public interface DictBaseDataModuleOdsService {
      * @return
      */
     String getObsDictDISql(String item, String tableComment, String jsonString);
+
+    /**
+     * @param item
+     * @param tableComment
+     * @param jsonString
+     * @param odsFilePath  主要用来提取字段注释
+     * @return
+     */
+    String getObsDictDISql(String item, String tableComment, String jsonString, String odsFilePath);
 
     /**
      * 获取删除表穿件语句
@@ -65,6 +82,8 @@ public interface DictBaseDataModuleOdsService {
      * @return
      */
     String getObsDictDASql(String item, String tableComment, String jsonString);
+
+    String getObsDictDASql(String item, String tableComment, String jsonString, String odsFilePath);
 
     /**
      * 获取增量spark语句

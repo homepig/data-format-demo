@@ -39,6 +39,15 @@ public class DictBaseDataUtil {
         dictBaseDataModuleOdsService.getObsDictDASparkSql(itemName, jsonString);
     }
 
+    public void odsCreateDDL(String itemName, String itemDesc, String jsonString, String odsFilePath) {
+        dictBaseDataModuleOdsService.getObsDictDISql(itemName, itemDesc, jsonString, odsFilePath);
+        dictBaseDataModuleOdsService.getObsDictDeleteDASql(itemName, itemDesc);
+        dictBaseDataModuleOdsService.getObsDictDASql(itemName, itemDesc, jsonString, odsFilePath);
+        dictBaseDataModuleOdsService.getObsDictDISparkSql(itemName, jsonString);
+        dictBaseDataModuleOdsService.getObsDictDdSparkSql(itemName);
+        dictBaseDataModuleOdsService.getObsDictDASparkSql(itemName, jsonString);
+    }
+
     public void dimCreateDDL(String itemName, String itemDesc, String dimFilePath, String jsonString) {
         dictBaseDataModuleDimService.getDimCreateTableSql(itemName, itemDesc, dimFilePath);
         dictBaseDataModuleDimService.getDimSparkSql(itemName, itemName, jsonString);

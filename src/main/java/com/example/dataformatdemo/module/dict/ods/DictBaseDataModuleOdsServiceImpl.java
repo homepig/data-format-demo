@@ -1,11 +1,15 @@
 package com.example.dataformatdemo.module.dict.ods;
 
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.read.listener.PageReadListener;
 import com.alibaba.fastjson.JSONObject;
 import com.example.dataformatdemo.module.dict.ebs.DictBaseDataModuleEbsService;
+import com.example.dataformatdemo.module.dict.util.ExcelData;
 import lombok.Data;
 import org.openxmlformats.schemas.drawingml.x2006.chart.STGrouping;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class DictBaseDataModuleOdsServiceImpl implements DictBaseDataModuleOdsService {
@@ -50,6 +54,25 @@ public class DictBaseDataModuleOdsServiceImpl implements DictBaseDataModuleOdsSe
         return sb.toString();
     }
 
+    @Override
+    public String getFieldsSqlFromJsonString(String jsonString, String odsFilePath) {
+        JSONObject jsonObject = JSONObject.parseObject(jsonString);
+        StringBuffer sb = new StringBuffer();
+        Map<String, String> comments = getFieldComments();
+        // 从文件提取注释
+        Map<String, String> getExcelComments = getColumnComments(odsFilePath);
+        comments.putAll(getExcelComments);
+        for (Map.Entry<String, Object> entry : jsonObject.entrySet()) {
+            if (entry.getKey().equals("LastUpdateTime") || entry.getKey().equals("ID")) {
+                continue;
+            }
+            String field = entry.getKey().replaceAll("\\.", "_").toLowerCase();
+            String comment = comments.get(field);
+            sb.append("\t").append(field).append(" ").append("string COMMENT '").append(comment).append("',").append("\r\n");
+        }
+        return sb.toString();
+    }
+
     private String getComment(String field, Map<String, String> comments) {
         String comment = comments.get(field);
         if (comment == null) {
@@ -79,6 +102,30 @@ public class DictBaseDataModuleOdsServiceImpl implements DictBaseDataModuleOdsSe
         comments.put("org_name", "机构名称");
         comments.put("fq", "废弃");
         comments.put("category_id", "类别ID");
+        comments.put("isleaf", "是否叶子结点");
+        comments.put("orderno", "序列号");
+        comments.put("fullcode", "全编码");
+        comments.put("xtbs", "系统标识");
+        comments.put("htlx", "合同类型");
+        comments.put("issystem", "是否系统自带");
+        comments.put("level", "级别");
+        comments.put("pid", "父id");
+        comments.put("htflsx", "合同分类属性");
+        comments.put("htflsx_id", "合同分类属性ID");
+        return comments;
+    }
+
+    private Map<String, String> getColumnComments(String filePath) {
+        Map<String, String> comments = new LinkedHashMap<>();
+        EasyExcel.read(filePath, ExcelData.class, new PageReadListener<ExcelData>(datalist -> {
+            for (ExcelData excelData : datalist) {
+                String code = excelData.getCode();
+                String desc = excelData.getDesc();
+                if (code != null && desc != null && !"".equals(desc)) {
+                    comments.put(code, desc);
+                }
+            }
+        })).doReadAll();
         return comments;
     }
 
@@ -86,6 +133,17 @@ public class DictBaseDataModuleOdsServiceImpl implements DictBaseDataModuleOdsSe
     public String getObsDictDISql(String item, String tableComment, String jsonString) {
         String ods_dict_d_i_table = this.getOdsDITableName(item);
         String columns = this.getFieldsSqlFromJsonString(jsonString);
+        String create_table_sql = DictOdsSql.ods_dict_d_i.replaceAll("\\$TABLE_NAME\\$", ods_dict_d_i_table).replaceAll("\\$COLUMNS\\$", columns).replaceAll("\\$TABLE_COMMENT\\$", tableComment);
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>ods增量建模<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+        System.out.println(create_table_sql);
+        System.out.println("\r\n");
+        return create_table_sql;
+    }
+
+    @Override
+    public String getObsDictDISql(String item, String tableComment, String jsonString, String odsFilePath) {
+        String ods_dict_d_i_table = this.getOdsDITableName(item);
+        String columns = this.getFieldsSqlFromJsonString(jsonString, odsFilePath);
         String create_table_sql = DictOdsSql.ods_dict_d_i.replaceAll("\\$TABLE_NAME\\$", ods_dict_d_i_table).replaceAll("\\$COLUMNS\\$", columns).replaceAll("\\$TABLE_COMMENT\\$", tableComment);
         System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>ods增量建模<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
         System.out.println(create_table_sql);
@@ -107,6 +165,17 @@ public class DictBaseDataModuleOdsServiceImpl implements DictBaseDataModuleOdsSe
     public String getObsDictDASql(String item, String tableComment, String jsonString) {
         String ods_dict_d_i_table = this.getOdsDATableName(item);
         String columns = this.getFieldsSqlFromJsonString(jsonString);
+        String create_table_sql = DictOdsSql.ods_dict_d_a.replaceAll("\\$TABLE_NAME\\$", ods_dict_d_i_table).replaceAll("\\$COLUMNS\\$", columns).replaceAll("\\$TABLE_COMMENT\\$", tableComment);
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>ods全量建模<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+        System.out.println(create_table_sql);
+        System.out.println("\r\n");
+        return create_table_sql;
+    }
+
+    @Override
+    public String getObsDictDASql(String item, String tableComment, String jsonString, String odsFilePath) {
+        String ods_dict_d_i_table = this.getOdsDATableName(item);
+        String columns = this.getFieldsSqlFromJsonString(jsonString, odsFilePath);
         String create_table_sql = DictOdsSql.ods_dict_d_a.replaceAll("\\$TABLE_NAME\\$", ods_dict_d_i_table).replaceAll("\\$COLUMNS\\$", columns).replaceAll("\\$TABLE_COMMENT\\$", tableComment);
         System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>ods全量建模<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
         System.out.println(create_table_sql);

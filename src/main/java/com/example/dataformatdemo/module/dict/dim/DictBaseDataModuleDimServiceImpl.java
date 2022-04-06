@@ -8,6 +8,7 @@ import com.example.dataformatdemo.module.dict.ods.DictBaseDataModuleOdsServiceIm
 import com.example.dataformatdemo.module.dict.util.ExcelData;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class DictBaseDataModuleDimServiceImpl implements DictBaseDataModuleDimService {
@@ -33,7 +34,7 @@ public class DictBaseDataModuleDimServiceImpl implements DictBaseDataModuleDimSe
         // 获取字段
         String columns = this.getColumns(dimFilePath);
         String create_table_sql = DictDimSql.dim_create_table_sql.replaceAll("\\$TABLE_NAME\\$", table_name)
-                .replaceAll("\\$COLUMNS\\$", columns).replaceAll("\\$TABLE_COMMENT\\$",tableComment);
+                .replaceAll("\\$COLUMNS\\$", columns).replaceAll("\\$TABLE_COMMENT\\$", tableComment);
         System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>DIM 建模<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
         System.out.println(create_table_sql);
         System.out.println("\r\n");
