@@ -12,6 +12,9 @@ public class OutputValueStatisticsDemo {
         // ods层 增量表和全量表
         String odsFilePath = "E:\\data-format-demo\\src\\main\\resources" + File.separator + "产值统计.xlsx";
 
+        // dwd层
+        String dwdFilePath = "E:\\data-format-demo\\src\\main\\resources" + File.separator + "产值统计dwd.xlsx";
+
         //1. ebs 建模
         dictBaseDataUtil.createEbsTables("output_value_statistics", "产值统计");
         //2. 获取 json结构的ebs数据模型
@@ -91,6 +94,12 @@ public class OutputValueStatisticsDemo {
 
         if (dimFilePath != null && !"".equals(dimFilePath)) {
             dictBaseDataUtil.dimCreateDDL("output_value_statistics", "产值统计", dimFilePath, jsonString);
+        }
+
+        // dwd 建模
+        if (dwdFilePath != null && !"".equals(dwdFilePath)) {
+            dictBaseDataUtil.dwdCreateDDL("produce_prod_value_statistics_fuse", "产值统计", dwdFilePath);
+            dictBaseDataUtil.dwdSparkSql("produce_prod_value_statistics_fuse", dwdFilePath, "ods_geps_meta_output_value_statistics_d_a", "ods_oa_production_d_a");
         }
     }
 }

@@ -10,6 +10,9 @@ public class DictDemo {
         // ods层 增量表和全量表
         String odsFilePath = "";
 
+        // dwd层
+        String dwdFilePath = "";
+
         //1. ebs 建模
         dictBaseDataUtil.createEbsTables("uses_dict", "用途字典");
         //2. 获取 json结构的ebs数据模型
@@ -18,6 +21,8 @@ public class DictDemo {
         //3. ods 建模 以及开发
         if (odsFilePath != null && !"".equals(odsFilePath)) {
             dictBaseDataUtil.odsCreateDDL("", "", jsonString, odsFilePath);
+        } else {
+            dictBaseDataUtil.odsCreateDDL("", "", jsonString);
         }
         //4. 字段注释
 
@@ -25,6 +30,11 @@ public class DictDemo {
 
         if (dimFilePath != null && !"".equals(dimFilePath)) {
             dictBaseDataUtil.dimCreateDDL("", "", dimFilePath, jsonString);
+        }
+
+        // dwd 建模
+        if (dwdFilePath != null && !"".equals(dwdFilePath)) {
+            dictBaseDataUtil.dwdCreateDDL("", "", "");
         }
     }
 }
