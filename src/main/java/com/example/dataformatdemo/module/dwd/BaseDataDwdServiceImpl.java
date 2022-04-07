@@ -38,7 +38,7 @@ public class BaseDataDwdServiceImpl implements BaseDataDwdService {
         String dwd_spark_sql = BaseDataDwdSql.dwd_spark_sql.replaceAll("\\$ODS_COLUMNS\\$", dwdSparkSqlPart.getOdsColumns())
                 .replaceAll("\\$ODS_TABLE\\$", odsTable).replaceAll("\\$OA_COLUMNS\\$", dwdSparkSqlPart.getOaColumns())
                 .replaceAll("\\$OA_TABLE\\$", oaTable).replaceAll("\\$DWD_TABLE\\$", dwd_table)
-                .replaceAll("\\$DWD_COLUMNS\\$",dwdSparkSqlPart.getDwdColumns()).replaceAll("\\$LEFT_JOIN_TABLES\\$",dwdSparkSqlPart.getJoinSql());
+                .replaceAll("\\$DWD_COLUMNS\\$", dwdSparkSqlPart.getDwdColumns()).replaceAll("\\$LEFT_JOIN_TABLES\\$", dwdSparkSqlPart.getJoinSql());
         System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>DWD SparkSQL<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
         System.out.println(dwd_spark_sql);
         System.out.println("\r\n");
@@ -71,41 +71,20 @@ public class BaseDataDwdServiceImpl implements BaseDataDwdService {
                 // oa 对应字段
                 String oa_field = excelData.getOaSource();
 
-                // 数据清洗
-                if (code.equals("contract_id")) {
-                    dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
-                    joinSql.append("\t").append("LEFT JOIN contract as c on a.contract_id = c.id").append("\r\n");
-                    continue;
-                }
-
-                if (code.equals("contract_name")) {
-                    dwdColumns.append("\t").append("c.name").append(",").append("\r\n");
-                    continue;
-                }
-
-                if (code.equals("project_belong_company_id")) {
-                    dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
-                    joinSql.append("\t").append("LEFT JOIN org as company on a.project_belong_company_id = company.ext_org_id").append("\r\n");
-                    continue;
-                }
-
-                if (code.equals("project_belong_company_name")) {
-                    dwdColumns.append("\t").append("company.ext_org_name").append(",").append("\r\n");
-                    continue;
-                }
-
-                if (code.equals("depart_id")) {
-                    dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
-                    joinSql.append("\t").append("LEFT JOIN org as depart on a.depart_id = depart.ext_org_id").append("\r\n");
-                    continue;
-                }
-
-                if (code.equals("depart_name")) {
-                    dwdColumns.append("\t").append("depart.ext_org_name").append(",").append("\r\n");
+                if (code.equals("data_source")) {
+                    odsColumns.append("\t").append("'geps'").append(" AS ").append(code).append("\r\n");
+                    oaColumns.append("\t").append("'oa'").append(" AS ").append(code).append("\r\n");
                     continue;
                 }
 
                 if (ods_field != null && !"".equals(ods_field)) {
+//                    if (ods_field.equals("dept_deptid")) {
+//                        odsColumns.append("\t").append(ods_field.toLowerCase()).append(" AS ")
+//                                .append("org_id").append(",").append("--").append(desc).append("\r\n");
+//                    }else {
+//                        odsColumns.append("\t").append(ods_field.toLowerCase()).append(" AS ")
+//                                .append(code).append(",").append("--").append(desc).append("\r\n");
+//                    }
                     odsColumns.append("\t").append(ods_field.toLowerCase()).append(" AS ")
                             .append(code).append(",").append("--").append(desc).append("\r\n");
                 } else {
@@ -114,11 +93,35 @@ public class BaseDataDwdServiceImpl implements BaseDataDwdService {
 
 
                 if (oa_field != null && !"".equals(oa_field)) {
+//                    if (oa_field.equals("xmcode")) {
+//                        oaColumns.append("\t").append(oa_field.toLowerCase()).append(" AS ").append("org_id").append(",").append("--").append(desc).append("\r\n");
+//                    }else {
+//                        oaColumns.append("\t").append(oa_field.toLowerCase()).append(" AS ").append(code).append(",").append("--").append(desc).append("\r\n");
+//                    }
                     oaColumns.append("\t").append(oa_field.toLowerCase()).append(" AS ").append(code).append(",").append("--").append(desc).append("\r\n");
                 } else {
                     oaColumns.append("\t").append("''").append(" AS ").append(code).append(",").append("--").append(desc).append("\r\n");
                 }
-                dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
+
+                // 数据清洗
+                if (code.equals("contract_id")) {
+                    dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
+                    joinSql.append("\t").append("LEFT JOIN contract as c on a.contract_id = c.id").append("\r\n");
+                } else if (code.equals("contract_name")) {
+                    dwdColumns.append("\t").append("c.name").append(",").append("\r\n");
+                } else if (code.equals("project_belong_company_id")) {
+                    dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
+                    joinSql.append("\t").append("LEFT JOIN org as company on a.project_belong_company_id = company.ext_org_id").append("\r\n");
+                } else if (code.equals("project_belong_company_name")) {
+                    dwdColumns.append("\t").append("company.ext_org_name").append(",").append("\r\n");
+                } else if (code.equals("depart_id")) {
+                    dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
+                    joinSql.append("\t").append("LEFT JOIN org as depart on a.depart_id = depart.ext_org_id").append("\r\n");
+                } else if (code.equals("depart_name")) {
+                    dwdColumns.append("\t").append("depart.ext_org_name").append(",").append("\r\n");
+                } else {
+                    dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
+                }
             }
         })).sheet().doRead();
         DwdSparkSqlPart dwdSparkSqlPart = new DwdSparkSqlPart();

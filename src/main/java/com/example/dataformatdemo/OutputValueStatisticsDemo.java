@@ -2,6 +2,9 @@ package com.example.dataformatdemo;
 
 import java.io.File;
 
+/**
+ * 产值统计
+ */
 public class OutputValueStatisticsDemo {
     public static void main(String[] args) {
         DictBaseDataUtil dictBaseDataUtil = DictBaseDataUtil.getInstance();

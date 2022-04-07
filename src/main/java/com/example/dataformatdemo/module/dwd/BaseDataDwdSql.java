@@ -13,6 +13,7 @@ public class BaseDataDwdSql {
             "\tcorporate_code string COMMENT '分公司编码',\n" +
             "\tcorporate string COMMENT '分公司',\n" +
             "\tproject_code string COMMENT '项目编码',\n" +
+            "\tpt_tenant_id string COMMENT '平台租户id',\n" +
             "\tpt_org_id string COMMENT '平台机构id',\n" +
             "\torg_id string COMMENT '机构id',\n" +
             "\torg_name string COMMENT '机构名称',\n" +
@@ -35,7 +36,7 @@ public class BaseDataDwdSql {
             "),\n" +
             "contract AS(\n" +
             "select * from dim.dim_all_contract where pt='${part_day}')\n" +
-            "INSERT OVERWRITE TABLE dwd.dwd_budget_engineering_settlement PARTITION(pt='${part_day}')\n" +
+            "INSERT OVERWRITE TABLE dwd.$DWD_TABLE$ PARTITION(pt='${part_day}')\n" +
             "SELECT\n" +
             "$DWD_COLUMNS$" +
             "b.subsidiary_id,\n" +
@@ -50,10 +51,10 @@ public class BaseDataDwdSql {
             "b.bi_org_id,\n" +
             "b.bi_org_name,\n" +
             "b.ext_org_id AS source_org_id,\n" +
-            "b.pt_ext_value AS data_source,\n" +
+            "a.data_source,\n" +
             "b.bi_tenant_id,\n" +
             "CURRENT_TIMESTAMP as op_time\n" +
             "FROM (SELECT * FROM geps UNION ALL SELECT * FROM oa)AS a\n" +
             "$LEFT_JOIN_TABLES$"+
-            "\tLEFT JOIN org as b on a.org_id= b.ext_org_id;";
+            "\tLEFT JOIN org as b on a.depart_id= b.ext_org_id;";
 }
