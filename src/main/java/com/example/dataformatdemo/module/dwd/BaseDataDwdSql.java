@@ -27,6 +27,7 @@ public class BaseDataDwdSql {
 
     public static final String dwd_spark_sql = "with geps as (\n" +
             "select $ODS_COLUMNS$ from ods.$ODS_TABLE$ WHERE pt='${part_day}' AND  is_enable='Y' AND is_delete='N'),\n" +
+            "$WITH_SQL$"+
             "oa as (SELECT $OA_COLUMNS$ from ods.$OA_TABLE$ where pt='${part_day}'),\n" +
             "org AS(\n" +
             "SELECT\n" +

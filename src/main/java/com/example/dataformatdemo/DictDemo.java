@@ -34,7 +34,7 @@ public class DictDemo {
 
         // dwd 建模
         if (dwdFilePath != null && !"".equals(dwdFilePath)) {
-            dictBaseDataUtil.dwdCreateDDL("", "", "");
+            dictBaseDataUtil.dwdCreateDDL("", "", dwdFilePath);
             dictBaseDataUtil.dwdSparkSql("", dwdFilePath, "", "");
         }
     }

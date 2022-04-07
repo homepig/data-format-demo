@@ -36,9 +36,21 @@ public class BaseDataDwdServiceImpl implements BaseDataDwdService {
         String dwd_table = getDwdTableName(item);
         DwdSparkSqlPart dwdSparkSqlPart = this.getDwdSparkSqlPart(filePath);
         String dwd_spark_sql = BaseDataDwdSql.dwd_spark_sql.replaceAll("\\$ODS_COLUMNS\\$", dwdSparkSqlPart.getOdsColumns())
-                .replaceAll("\\$ODS_TABLE\\$", odsTable).replaceAll("\\$OA_COLUMNS\\$", dwdSparkSqlPart.getOaColumns())
-                .replaceAll("\\$OA_TABLE\\$", oaTable).replaceAll("\\$DWD_TABLE\\$", dwd_table)
+                .replaceAll("\\$ODS_TABLE\\$", odsTable)
+                .replaceAll("\\$DWD_TABLE\\$", dwd_table)
                 .replaceAll("\\$DWD_COLUMNS\\$", dwdSparkSqlPart.getDwdColumns()).replaceAll("\\$LEFT_JOIN_TABLES\\$", dwdSparkSqlPart.getJoinSql());
+        if (oaTable != null && !"".equals(oaTable)) {
+            dwd_spark_sql = dwd_spark_sql.replaceAll("\\$OA_COLUMNS\\$", dwdSparkSqlPart.getOaColumns())
+                    .replaceAll("\\$OA_TABLE\\$", oaTable);
+        } else {
+            dwd_spark_sql = dwd_spark_sql.replaceAll("\\$OA_COLUMNS\\$", "")
+                    .replaceAll("\\$OA_TABLE\\$", "");
+        }
+        if (dwdSparkSqlPart.getWithSql() != null && !"".equals(dwdSparkSqlPart.getWithSql())) {
+            dwd_spark_sql = dwd_spark_sql.replaceAll("\\$WITH_SQL\\$", dwdSparkSqlPart.getWithSql());
+        } else {
+            dwd_spark_sql = dwd_spark_sql.replaceAll("\\$WITH_SQL\\$", "");
+        }
         System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>DWD SparkSQL<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
         System.out.println(dwd_spark_sql);
         System.out.println("\r\n");
@@ -51,6 +63,7 @@ public class BaseDataDwdServiceImpl implements BaseDataDwdService {
         StringBuffer oaColumns = new StringBuffer();
         StringBuffer dwdColumns = new StringBuffer();
         StringBuffer joinSql = new StringBuffer();
+        StringBuffer withSql = new StringBuffer();
 
         EasyExcel.read(filePath, ExcelData.class, new PageReadListener<ExcelData>(datalist -> {
             for (ExcelData excelData : datalist) {
@@ -119,6 +132,35 @@ public class BaseDataDwdServiceImpl implements BaseDataDwdService {
                     joinSql.append("\t").append("LEFT JOIN org as depart on a.depart_id = depart.ext_org_id").append("\r\n");
                 } else if (code.equals("depart_name")) {
                     dwdColumns.append("\t").append("depart.ext_org_name").append(",").append("\r\n");
+                } else if (code.equals("calculate_obj_id")) {
+                    dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
+                    joinSql.append("\t").append("LEFT JOIN account on a.calculate_obj_id = account.id").append("\r\n");
+                    withSql.append(BaseDataDwdConstant.hsdx_sql);
+                } else if (code.equals("calculate_obj_name")) {
+                    dwdColumns.append("\t").append("account.name").append(",").append("\r\n");
+                } else if (code.equals("contact_unit_id")) {
+                    dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
+                    joinSql.append("\t").append("LEFT JOIN unit on a.contact_unit_id = unit.bill_id").append("\r\n");
+                    withSql.append(BaseDataDwdConstant.hzdw_sql);
+                } else if (code.equals("contact_unit_name")) {
+                    dwdColumns.append("\t").append("unit.name").append(",").append("\r\n");
+                } else if (code.equals("project_basic_info_id")) {
+                    dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
+                    joinSql.append("\t").append("LEFT JOIN project on a.project_basic_info_id = project.id").append("\r\n");
+                    withSql.append(BaseDataDwdConstant.xmjbxx_sql);
+                } else if (code.equals("project_basic_info_name")) {
+                    dwdColumns.append("\t").append("project.name").append(",").append("\r\n");
+                } else if (code.equals("build_contract_reg_id")) {
+                    dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
+                    joinSql.append("\t").append("LEFT JOIN contractbuild on a.build_contract_reg_id = contractbuild.id").append("\r\n");
+                    withSql.append(BaseDataDwdConstant.sghtdj_sql);
+                } else if (code.equals("build_contract_reg_name")) {
+                    dwdColumns.append("\t").append("contractbuild.htfl").append(",").append("\r\n");
+                } else if (code.equals("requisition_id")) {
+                    dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
+                    joinSql.append("\t").append("LEFT JOIN org as requisition on a.requisition_id = requisition.ext_org_id").append("\r\n");
+                } else if (code.equals("requisition_name")) {
+                    dwdColumns.append("\t").append("requisition.ext_org_name").append(",").append("\r\n");
                 } else {
                     dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
                 }
@@ -129,6 +171,7 @@ public class BaseDataDwdServiceImpl implements BaseDataDwdService {
         dwdSparkSqlPart.setOaColumns(oaColumns.toString());
         dwdSparkSqlPart.setDwdColumns(dwdColumns.toString());
         dwdSparkSqlPart.setJoinSql(joinSql.toString());
+        dwdSparkSqlPart.setWithSql(withSql.toString());
         return dwdSparkSqlPart;
     }
 
@@ -162,5 +205,7 @@ public class BaseDataDwdServiceImpl implements BaseDataDwdService {
         private String dwdColumns;
 
         private String joinSql;
+
+        private String withSql;
     }
 }
