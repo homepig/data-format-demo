@@ -122,6 +122,11 @@ public class DictBaseDataModuleOdsServiceImpl implements DictBaseDataModuleOdsSe
                 String code = excelData.getCode();
                 String desc = excelData.getDesc();
                 if (code != null && desc != null && !"".equals(desc)) {
+                    desc = desc.replaceAll("（","").replaceAll("\\(","")
+                            .replaceAll("）","").replaceAll("\\)","")
+                            .replaceAll(":","").replaceAll("：","")
+                            .replaceAll(",","或").replaceAll("，","或")
+                            .replaceAll("%","百分之");
                     comments.put(code, desc);
                 }
             }

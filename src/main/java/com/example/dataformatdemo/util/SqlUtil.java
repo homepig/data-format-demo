@@ -28,6 +28,11 @@ public class SqlUtil {
                 }
                 sb.append("\t").append(code).append(" string COMMENT '");
                 if (desc != null && !"".equals(desc)) {
+                    desc = desc.replaceAll("（", "").replaceAll("\\(", "")
+                            .replaceAll("）", "").replaceAll("\\)", "")
+                            .replaceAll(":", "").replaceAll("：", "")
+                            .replaceAll(",", "或").replaceAll("，", "或")
+                            .replaceAll("%", "百分之");
                     sb.append(desc);
                 }
                 sb.append("',\r\n");

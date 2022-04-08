@@ -138,9 +138,10 @@ public class BaseDataDwdServiceImpl implements BaseDataDwdService {
                     withSql.append(BaseDataDwdConstant.hsdx_sql);
                 } else if (code.equals("calculate_obj_name")) {
                     dwdColumns.append("\t").append("account.name").append(",").append("\r\n");
-                } else if (code.equals("contact_unit_id")) {
+                } else if (code.equals("contact_unit_id") || code.equals("cooperation_unit_dict_id")) {
                     dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
-                    joinSql.append("\t").append("LEFT JOIN unit on a.contact_unit_id = unit.bill_id").append("\r\n");
+//                    joinSql.append("\t").append("LEFT JOIN unit on a.contact_unit_id = unit.bill_id").append("\r\n");
+                    joinSql.append("\t").append("LEFT JOIN unit on a.").append(code).append(" = unit.bill_id").append("\r\n");
                     withSql.append(BaseDataDwdConstant.hzdw_sql);
                 } else if (code.equals("contact_unit_name")) {
                     dwdColumns.append("\t").append("unit.name").append(",").append("\r\n");
@@ -155,12 +156,18 @@ public class BaseDataDwdServiceImpl implements BaseDataDwdService {
                     joinSql.append("\t").append("LEFT JOIN contractbuild on a.build_contract_reg_id = contractbuild.id").append("\r\n");
                     withSql.append(BaseDataDwdConstant.sghtdj_sql);
                 } else if (code.equals("build_contract_reg_name")) {
-                    dwdColumns.append("\t").append("contractbuild.htfl").append(",").append("\r\n");
+                    dwdColumns.append("\t").append("contractbuild.name").append(",").append("\r\n");
                 } else if (code.equals("requisition_id")) {
                     dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
                     joinSql.append("\t").append("LEFT JOIN org as requisition on a.requisition_id = requisition.ext_org_id").append("\r\n");
                 } else if (code.equals("requisition_name")) {
                     dwdColumns.append("\t").append("requisition.ext_org_name").append(",").append("\r\n");
+                } else if (code.equals("payment_type_set_dict_id")) {
+                    dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
+                    joinSql.append("\t").append("LEFT JOIN paytype on a.payment_type_set_dict_id = paytype.bill_id").append("\r\n");
+                    withSql.append(BaseDataDwdConstant.zjzf_sql);
+                } else if (code.equals("payment_type_set_dict_name")) {
+                    dwdColumns.append("\t").append("paytype.payment_type").append(",").append("\r\n");
                 } else {
                     dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
                 }

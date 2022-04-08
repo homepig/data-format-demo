@@ -24,5 +24,10 @@ public class BaseDataDwdConstant {
     /**
      * 合同施工登记
      */
-    public static final String sghtdj_sql = "contractbuild AS (select * from ods.ods_geps_meta_build_contract_d_a where pt='\\${part_day}'),\n";
+    public static final String sghtdj_sql = "contractbuild AS (select * from ods.ods_geps_meta_construction_contract_d_a where pt='\\${part_day}'),\n";
+
+    /**
+     * 资金支付
+     */
+    public static final String zjzf_sql = "paytype AS (select * from dim.dim_fund_pay_type_dict where pt='\\${part_day}'),\n";
 }
