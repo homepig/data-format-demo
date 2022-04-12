@@ -26,9 +26,9 @@ public class BaseDataDwdSql {
             "stored as ORCFILE;";
 
     public static final String dwd_spark_sql = "with geps as (\n" +
-            "select $ODS_COLUMNS$ from ods.$ODS_TABLE$ WHERE pt='${part_day}' AND  is_enable='Y' AND is_delete='N'),\n" +
+            "select $ODS_COLUMNS$ from ods.$ODS_TABLE$ WHERE pt='${part_day}' AND  is_enable='Y' AND is_delete='N' AND dept_deptid is not null AND dept_deptid != ''),\n" +
             "$WITH_SQL$"+
-            "oa as (SELECT $OA_COLUMNS$ from ods.$OA_TABLE$ where pt='${part_day}'),\n" +
+            "oa as (SELECT $OA_COLUMNS$ from ods.$OA_TABLE$ where pt='${part_day}' AND dept_deptid is not null AND dept_deptid != ''),\n" +
             "org AS(\n" +
             "SELECT\n" +
             "* \n" +

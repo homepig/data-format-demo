@@ -168,6 +168,36 @@ public class BaseDataDwdServiceImpl implements BaseDataDwdService {
                     withSql.append(BaseDataDwdConstant.zjzf_sql);
                 } else if (code.equals("payment_type_set_dict_name")) {
                     dwdColumns.append("\t").append("paytype.payment_type").append(",").append("\r\n");
+                } else if (code.equals("project_borrowing_id")) {
+                    dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
+                    joinSql.append("\t").append("LEFT JOIN borrowmoney on a.project_borrowing_id = borrowmoney.id").append("\r\n");
+                    withSql.append(BaseDataDwdConstant.xmjk_sql);
+                } else if (code.equals("project_borrowing_name")) {
+                    dwdColumns.append("\t").append("borrowmoney.name").append(",").append("\r\n");
+                } else if (code.equals("output_category_id")) {
+                    dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
+                    joinSql.append("\t").append("LEFT JOIN xxfpfl on a.output_category_id = xxfpfl.id").append("\r\n");
+                    withSql.append(BaseDataDwdConstant.xxfpfl_sql);
+                } else if (code.equals("output_category_name")) {
+                    dwdColumns.append("\t").append("xxfpfl.name").append(",").append("\r\n");
+                } else if (code.equals("match_contract_id")) {
+                    dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
+                    joinSql.append("\t").append("LEFT JOIN htjbxxb on a.match_contract_id = htjbxxb.id").append("\r\n");
+                    withSql.append(BaseDataDwdConstant.htjbxxb_sql);
+                } else if (code.equals("match_contract_name")) {
+                    dwdColumns.append("\t").append("htjbxxb.name").append(",").append("\r\n");
+                } else if (code.equals("tax_reduction_dict_id")) {
+                    dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
+                    joinSql.append("\t").append("LEFT JOIN jsxzdict on a.tax_reduction_dict_id = jsxzdict.id").append("\r\n");
+                    withSql.append(BaseDataDwdConstant.jsxzdict_sql);
+                } else if (code.equals("tax_reduction_dict_name")) {
+                    dwdColumns.append("\t").append("jsxzdict.name").append(",").append("\r\n");
+                } else if (code.equals("taxable_project_code_dict_id")) {
+                    dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
+                    joinSql.append("\t").append("LEFT JOIN ysxmdict on a.taxable_project_code_dict_id = ysxmdict.id").append("\r\n");
+                    withSql.append(BaseDataDwdConstant.ysxmdict_sql);
+                } else if (code.equals("taxable_project_code_dict_name")) {
+                    dwdColumns.append("\t").append("ysxmdict.name").append(",").append("\r\n");
                 } else {
                     dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
                 }
