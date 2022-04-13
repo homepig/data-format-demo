@@ -55,6 +55,4 @@ public class BaseDataDwdConstant {
      * 应税项目字典
      */
     public static final String ysxmdict_sql = "ysxmdict AS (select * from dim.dim_taxable_pro_code_dict where pt='\\${part_day}'),";
-
-
 }
