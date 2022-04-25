@@ -44,7 +44,7 @@ public class SqlUtil {
     private static Map<String, String> getPassFields() {
         Map<String, String> pass = new HashMap<>();
         pass.put("字段编码", "");
-        pass.put("tenant_Id", "");
+        pass.put("pt_tenant_Id", "");
         pass.put("tenant_id", "");
         pass.put("op_time", "");
         pass.put("pt", "");

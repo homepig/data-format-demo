@@ -64,11 +64,16 @@ public class DictOdsSql {
             "'id') b as id\n" +
             "WHERE t.pt ='${part_day}';";
 
-    public static final String ods_dict_d_a_spark = "WITH yesterday_a AS (SELECT $SELECT_COLUMNS_V$ FROM ods.$ODS_DA_TABLE$ WHERE pt='${part_yesterday}' AND id IS NOT NULL  AND id !=''),\n" +
-            "day_i AS(SELECT $SELECT_COLUMNS_V$\n" +
+    public static final String ods_dict_d_a_spark = "WITH yesterday_a AS (SELECT $SELECT_COLUMNS_V$,end_date,is_delete FROM ods.$ODS_DA_TABLE$ WHERE pt='${part_yesterday}' AND id IS NOT NULL  AND id !=''),\n" +
+            "day_i AS(SELECT $SELECT_COLUMNS_V$,'' AS end_date,'' AS is_delete\n" +
             " FROM(SELECT a.*,ROW_NUMBER() OVER(PARTITION BY id ,last_update_time ORDER BY last_update_time) as rn FROM ods.$ODS_DI_TABLE$ AS a WHERE a.pt='${part_day}' AND a.id IS NOT NULL AND a.id !='' AND NOT EXISTS(SELECT 1 FROM yesterday_a AS b WHERE a.id=b.id AND a.last_update_time=b.last_update_time)) tt WHERE tt.rn=1),\n" +
             "ods_del AS(SELECT * FROM ods.$ODS_DD_TABLE$ WHERE pt='${part_day}'  AND del_id IS NOT NULL  AND del_id !='')\n" +
             "INSERT OVERWRITE TABLE ods.$ODS_DA_TABLE$ PARTITION(pt='${part_day}')\n" +
-            "SELECT $SELECT_COLUMNS$,CURRENT_TIMESTAMP as op_time,IF(b.del_id is NOT null AND  b.del_id !='','${part_day}','9999-12-31') AS end_date,IF(ROW_NUMBER() OVER(PARTITION BY a.id ORDER BY a.last_update_time DESC)=1,'Y','N') as is_enable,IF(b.del_id is NOT null AND  b.del_id !='','Y','N') AS is_delete \n" +
+            "SELECT $SELECT_COLUMNS$,CURRENT_TIMESTAMP as op_time,\n" +
+//            "IF(b.del_id is NOT null AND  b.del_id !='','${part_day}','9999-12-31') AS end_date," +
+            "IF(a.end_date is not null AND a.end_date != '' AND a.end_date != '9999-12-31',a.end_date,IF(b.del_id is NOT null AND b.del_id !='','${part_day}','9999-12-31')) AS end_date,\n"+
+            "IF(ROW_NUMBER() OVER(PARTITION BY a.id ORDER BY a.last_update_time DESC)=1,'Y','N') as is_enable," +
+//            "IF(b.del_id is NOT null AND  b.del_id !='','Y','N') AS is_delete \n" +
+            "IF(a.is_delete='Y',a.is_delete,IF(b.del_id is NOT null AND b.del_id !='','Y','N')) AS is_delete \n"+
             "FROM (SELECT * FROM yesterday_a UNION ALL SELECT * FROM day_i) as a LEFT JOIN ods_del AS b ON  a.id=b.del_id;";
 }

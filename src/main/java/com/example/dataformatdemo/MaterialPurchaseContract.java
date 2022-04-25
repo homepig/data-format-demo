@@ -18,6 +18,7 @@ public class MaterialPurchaseContract {
         // dwd层
         String dwdFilePath = "E:\\data-format-demo\\src\\main\\resources" + File.separator + "材料采购合同dwd.xls";
 
+
         //1. ebs 建模
         dictBaseDataUtil.createEbsTables("material_purchase_contract", "材料采购合同");
         //2. 获取 json结构的ebs数据模型

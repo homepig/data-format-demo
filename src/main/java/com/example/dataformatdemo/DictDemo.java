@@ -13,6 +13,9 @@ public class DictDemo {
         // dwd层
         String dwdFilePath = "";
 
+        // dws层
+        String dwsFilePath = "";
+
         //1. ebs 建模
         dictBaseDataUtil.createEbsTables("uses_dict", "用途字典");
         //2. 获取 json结构的ebs数据模型
@@ -36,6 +39,11 @@ public class DictDemo {
         if (dwdFilePath != null && !"".equals(dwdFilePath)) {
             dictBaseDataUtil.dwdCreateDDL("", "", dwdFilePath);
             dictBaseDataUtil.dwdSparkSql("", dwdFilePath, "", "");
+        }
+
+        // dws 建模 及 spark sql
+        if (dwsFilePath != null && !"".equals(dwsFilePath)) {
+            dictBaseDataUtil.dwsCreateDDL("", "", dwsFilePath);
         }
     }
 }

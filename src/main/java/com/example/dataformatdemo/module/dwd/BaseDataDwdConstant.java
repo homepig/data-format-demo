@@ -14,7 +14,7 @@ public class BaseDataDwdConstant {
     /**
      * 合作单位
      */
-    public static final String hzdw_sql = "unit AS (select * from dim.dim_cooperation_unit where pt='\\${part_day}'),\n";
+    public static final String hzdw_sql = "unit AS (select * from dim.dim_cooperation_unit where pt='\\${part_day}' and bill_id is not null and bill_id != ''),\n";
 
     /**
      * 项目基本信息
@@ -29,7 +29,7 @@ public class BaseDataDwdConstant {
     /**
      * 资金支付
      */
-    public static final String zjzf_sql = "paytype AS (select * from dim.dim_fund_pay_type_dict where pt='\\${part_day}'),\n";
+    public static final String zjzf_sql = "paytype AS (select * from dim.dim_fund_pay_type_dict where pt='\\${part_day}' and id is not null and id != ''),\n";
 
     /**
      * 项目借款
@@ -49,10 +49,36 @@ public class BaseDataDwdConstant {
     /**
      * 减税性质字典
      */
-    public static final String jsxzdict_sql = "jsxzdict AS (select * from dim.dim_tax_cuts_nature_dict where pt='\\${part_day}'),";
+    public static final String jsxzdict_sql = "jsxzdict AS (select * from dim.dim_tax_cuts_nature_dict where pt='\\${part_day}' and id is not null and id != ''),";
 
     /**
      * 应税项目字典
      */
-    public static final String ysxmdict_sql = "ysxmdict AS (select * from dim.dim_taxable_pro_code_dict where pt='\\${part_day}'),";
+    public static final String ysxmdict_sql = "ysxmdict AS (select * from dim.dim_taxable_pro_code_dict where pt='\\${part_day}' and id is not null and id != ''),";
+
+    /**
+     * 地域字典
+     */
+    public static final String dyzd_sql = "dyzd AS (select * from dim.dim_region_dict where pt='\\${part_day}' and id is not null and id != ''),";
+
+    /**
+     * 材料类别
+     */
+    public static final String cllb_sql = "cllb AS (select * from dim.dim_material_category where pt='\\${part_day}' and id is not null and id != ''),";
+
+    /**
+     * 纳税类别
+     */
+    public static final String nslb_sql = "nslb AS (select * from dim.dim_taxpayer_category_dict where pt='\\${part_day}' and id is not null and id != ''),";
+
+
+    /**
+     * 合同分类
+     */
+    public static final String htfl_sql = "htfl AS (select * from dim.dim_contract_category where pt='\\${part_day}' and id is not null and id != ''),";
+
+    /**
+     * 质量目标
+     */
+    public static final String zlmb_sql = "zlmb AS (select * from dim.dim_quality_goal where pt='\\${part_day}' and id is not null and id != ''),";
 }

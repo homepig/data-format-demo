@@ -122,10 +122,13 @@ public class BaseDataDwdServiceImpl implements BaseDataDwdService {
                     joinSql.append("\t").append("LEFT JOIN contract as c on a.contract_id = c.id").append("\r\n");
                 } else if (code.equals("contract_name")) {
                     dwdColumns.append("\t").append("c.name").append(",").append("\r\n");
-                } else if (code.equals("project_belong_company_id")) {
+                } else if (code.equals("project_belong_company_id") || code.equals("purchase_project_id")) {
+                    // 项目对应的组织
                     dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
-                    joinSql.append("\t").append("LEFT JOIN org as company on a.project_belong_company_id = company.ext_org_id").append("\r\n");
-                } else if (code.equals("project_belong_company_name")) {
+//                    joinSql.append("\t").append("LEFT JOIN org as company on a.project_belong_company_id = company.ext_org_id").append("\r\n");
+                    joinSql.append("\t").append("LEFT JOIN org as company on a.").append(code).append(" = company.ext_org_id").append("\r\n");
+                } else if (code.equals("project_belong_company_name") || code.equals("purchase_project_name")) {
+                    // 项目对应的组织
                     dwdColumns.append("\t").append("company.ext_org_name").append(",").append("\r\n");
                 } else if (code.equals("depart_id")) {
                     dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
@@ -138,12 +141,15 @@ public class BaseDataDwdServiceImpl implements BaseDataDwdService {
                     withSql.append(BaseDataDwdConstant.hsdx_sql);
                 } else if (code.equals("calculate_obj_name")) {
                     dwdColumns.append("\t").append("account.name").append(",").append("\r\n");
-                } else if (code.equals("contact_unit_id") || code.equals("cooperation_unit_dict_id")) {
+                } else if (code.equals("contact_unit_id") || code.equals("cooperation_unit_dict_id")
+                        || code.equals("party_a_id") || code.equals("win_bid_supplier_id") || code.equals("party_b_id")) {
+                    // 合作单位
                     dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
-//                    joinSql.append("\t").append("LEFT JOIN unit on a.contact_unit_id = unit.bill_id").append("\r\n");
                     joinSql.append("\t").append("LEFT JOIN unit on a.").append(code).append(" = unit.bill_id").append("\r\n");
                     withSql.append(BaseDataDwdConstant.hzdw_sql);
-                } else if (code.equals("contact_unit_name")) {
+                } else if (code.equals("contact_unit_name") || code.equals("party_a_name") || code.equals("win_bid_supplier") ||
+                        code.equals("party_b_name")) {
+                    //TODO 有一个名字待补充
                     dwdColumns.append("\t").append("unit.name").append(",").append("\r\n");
                 } else if (code.equals("project_basic_info_id")) {
                     dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
@@ -198,7 +204,33 @@ public class BaseDataDwdServiceImpl implements BaseDataDwdService {
                     withSql.append(BaseDataDwdConstant.ysxmdict_sql);
                 } else if (code.equals("taxable_project_code_dict_name")) {
                     dwdColumns.append("\t").append("ysxmdict.name").append(",").append("\r\n");
-                } else {
+                } else if (code.equals("region_dict_id")) {
+                    dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
+                    joinSql.append("\t").append("LEFT JOIN dyzd on a.region_dict_id = dyzd.id").append("\r\n");
+                    withSql.append(BaseDataDwdConstant.dyzd_sql);
+                } else if (code.equals("region_dict_name")) {
+                    dwdColumns.append("\t").append("dyzd.name").append(",").append("\r\n");
+                } else if (code.equals("material_category_id")) {
+                    dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
+                    joinSql.append("\t").append("LEFT JOIN cllb on a.material_category_id = cllb.id").append("\r\n");
+                    withSql.append(BaseDataDwdConstant.cllb_sql);
+                } else if (code.equals("material_category")) {
+                    dwdColumns.append("\t").append("cllb.name").append(",").append("\r\n");
+                } else if (code.equals("party_b_taxpayer_category_id")) {
+                    dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
+                    joinSql.append("\t").append("LEFT JOIN nslb on a.party_b_taxpayer_category_id = nslb.id").append("\r\n");
+                    withSql.append(BaseDataDwdConstant.nslb_sql);
+                } else if (code.equals("party_b_taxpayer_category")) {
+                    dwdColumns.append("\t").append("nslb.name").append(",").append("\r\n");
+                } else if (code.equals("contract_category_id")) {
+                    dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
+                    joinSql.append("\t").append("LEFT JOIN htfl on a.contract_category_id = htfl.id").append("\r\n");
+                    withSql.append(BaseDataDwdConstant.htfl_sql);
+                } else if (code.equals("contract_category_name")) {
+                    dwdColumns.append("\t").append("htfl.name").append(",").append("\r\n");
+                } else if (code.equals("")){
+
+                }else {
                     dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
                 }
             }

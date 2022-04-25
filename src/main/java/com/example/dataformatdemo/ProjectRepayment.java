@@ -13,10 +13,13 @@ public class ProjectRepayment {
         String dimFilePath = "";
 
         // ods层 增量表和全量表
-        String odsFilePath = "E:\\data-format-demo\\src\\main\\resources" + File.separator + "项目还款ods.xls";
+        String odsFilePath = "";
 
         // dwd层
-        String dwdFilePath = "E:\\data-format-demo\\src\\main\\resources" + File.separator + "项目还款dwd.xls";
+        String dwdFilePath = "";
+
+        // dws层
+        String dwsFilePath = "E:\\data-format-demo\\src\\main\\resources" + File.separator + "项目还款dws.xls";
 
         //1. ebs 建模
         dictBaseDataUtil.createEbsTables("project_repayment", "项目还款");
@@ -99,6 +102,11 @@ public class ProjectRepayment {
         if (dwdFilePath != null && !"".equals(dwdFilePath)) {
             dictBaseDataUtil.dwdCreateDDL("fn_project_repayment", "项目还款", dwdFilePath);
             dictBaseDataUtil.dwdSparkSql("fn_project_repayment", dwdFilePath, "ods_geps_meta_project_repayment_d_a", "");
+        }
+
+        // dws 建模 及 spark sql
+        if (dwsFilePath != null && !"".equals(dwsFilePath)) {
+            dictBaseDataUtil.dwsCreateDDL("fn_project_repayment_sum_d", "项目还款汇总表", dwsFilePath);
         }
     }
 }

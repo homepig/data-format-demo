@@ -8,6 +8,8 @@ import com.example.dataformatdemo.module.dict.ods.DictBaseDataModuleOdsService;
 import com.example.dataformatdemo.module.dict.ods.DictBaseDataModuleOdsServiceImpl;
 import com.example.dataformatdemo.module.dwd.BaseDataDwdService;
 import com.example.dataformatdemo.module.dwd.BaseDataDwdServiceImpl;
+import com.example.dataformatdemo.module.dws.BaseDataDwsService;
+import com.example.dataformatdemo.module.dws.BaseDataDwsServiceImpl;
 import lombok.Data;
 
 @Data
@@ -20,6 +22,8 @@ public class DictBaseDataUtil {
     private DictBaseDataModuleDimService dictBaseDataModuleDimService;
 
     private BaseDataDwdService baseDataDwdService;
+
+    private BaseDataDwsService baseDataDwsService;
 
     /**
      * ebs建模
@@ -65,6 +69,10 @@ public class DictBaseDataUtil {
         baseDataDwdService.getDwdSparkSql(itemName, odsTable, oaTable, filePath);
     }
 
+    public void  dwsCreateDDL(String itemName, String itemDesc, String filePath) {
+        baseDataDwsService.getDwsCreateTableDDLSql(itemName, itemDesc, filePath);
+    }
+
     /**
      * 获取实例
      *
@@ -75,6 +83,7 @@ public class DictBaseDataUtil {
         DictBaseDataModuleOdsService dictBaseDataModuleOdsService = new DictBaseDataModuleOdsServiceImpl();
         dictBaseDataModuleOdsService.setDictBaseDataModuleEbsService(dictBaseDataModuleEbsService);
         DictBaseDataModuleDimService dictBaseDataModuleDimService = new DictBaseDataModuleDimServiceImpl();
+        BaseDataDwsService baseDataDwsService = new BaseDataDwsServiceImpl();
         dictBaseDataModuleDimService.setDictBaseDataModuleOdsService(dictBaseDataModuleOdsService);
         BaseDataDwdService baseDataDwdService = new BaseDataDwdServiceImpl();
         DictBaseDataUtil dictBaseDataUtil = new DictBaseDataUtil();
@@ -82,6 +91,7 @@ public class DictBaseDataUtil {
         dictBaseDataUtil.setDictBaseDataModuleOdsService(dictBaseDataModuleOdsService);
         dictBaseDataUtil.setDictBaseDataModuleDimService(dictBaseDataModuleDimService);
         dictBaseDataUtil.setBaseDataDwdService(baseDataDwdService);
+        dictBaseDataUtil.setBaseDataDwsService(baseDataDwsService);
         return dictBaseDataUtil;
     }
 
