@@ -40,6 +40,13 @@ public class BaseDataDwdServiceImpl implements BaseDataDwdService {
                 .replaceAll("\\$DWD_TABLE\\$", dwd_table)
                 .replaceAll("\\$DWD_COLUMNS\\$", dwdSparkSqlPart.getDwdColumns()).replaceAll("\\$LEFT_JOIN_TABLES\\$", dwdSparkSqlPart.getJoinSql());
         if (oaTable != null && !"".equals(oaTable)) {
+            dwd_spark_sql = dwd_spark_sql.replaceAll("\\$OA_WITH_SQL\\$", BaseDataDwdSql.dwd_oa_with_sql)
+                    .replaceAll("\\$UNION_OA_SQL\\$", BaseDataDwdSql.union_oa_sql);
+        } else {
+            dwd_spark_sql = dwd_spark_sql.replaceAll("\\$OA_WITH_SQL\\$", "")
+                    .replaceAll("\\$UNION_OA_SQL\\$", "");
+        }
+        if (oaTable != null && !"".equals(oaTable)) {
             dwd_spark_sql = dwd_spark_sql.replaceAll("\\$OA_COLUMNS\\$", dwdSparkSqlPart.getOaColumns())
                     .replaceAll("\\$OA_TABLE\\$", oaTable);
         } else {
@@ -132,9 +139,9 @@ public class BaseDataDwdServiceImpl implements BaseDataDwdService {
                     dwdColumns.append("\t").append("company.ext_org_name").append(",").append("\r\n");
                 } else if (code.equals("depart_id")) {
                     dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
-                    joinSql.append("\t").append("LEFT JOIN org as depart on a.depart_id = depart.ext_org_id").append("\r\n");
+//                    joinSql.append("\t").append("LEFT JOIN org as depart on a.depart_id = depart.ext_org_id").append("\r\n");
                 } else if (code.equals("depart_name")) {
-                    dwdColumns.append("\t").append("depart.ext_org_name").append(",").append("\r\n");
+                    dwdColumns.append("\t").append("b.ext_org_name").append(",").append("\r\n");
                 } else if (code.equals("calculate_obj_id")) {
                     dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
                     joinSql.append("\t").append("LEFT JOIN account on a.calculate_obj_id = account.id").append("\r\n");
@@ -147,9 +154,8 @@ public class BaseDataDwdServiceImpl implements BaseDataDwdService {
                     dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
                     joinSql.append("\t").append("LEFT JOIN unit on a.").append(code).append(" = unit.bill_id").append("\r\n");
                     withSql.append(BaseDataDwdConstant.hzdw_sql);
-                } else if (code.equals("contact_unit_name") || code.equals("party_a_name") || code.equals("win_bid_supplier") ||
+                } else if (code.equals("contact_unit_name") || code.equals("cooperation_unit_dict_name") || code.equals("party_a_name") || code.equals("win_bid_supplier") ||
                         code.equals("party_b_name")) {
-                    //TODO 有一个名字待补充
                     dwdColumns.append("\t").append("unit.name").append(",").append("\r\n");
                 } else if (code.equals("project_basic_info_id")) {
                     dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
@@ -228,9 +234,9 @@ public class BaseDataDwdServiceImpl implements BaseDataDwdService {
                     withSql.append(BaseDataDwdConstant.htfl_sql);
                 } else if (code.equals("contract_category_name")) {
                     dwdColumns.append("\t").append("htfl.name").append(",").append("\r\n");
-                } else if (code.equals("")){
+                } else if (code.equals("")) {
 
-                }else {
+                } else {
                     dwdColumns.append("\t").append("a.").append(code).append(",").append("\r\n");
                 }
             }
